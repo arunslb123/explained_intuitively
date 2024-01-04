@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/openai-parallel-function-calling-handson-tools/function_calling.html",
       "/posts/understanding-openai-chatcompletion-model-parameters/llm_temperature.html"
     ]
   }

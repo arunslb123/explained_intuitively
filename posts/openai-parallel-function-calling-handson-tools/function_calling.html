@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Arun Prakash">
+<meta name="dcterms.date" content="2024-01-03">
+
+<title>Explained Intuitively - MoodCast: Leveraging OpenAI Parallel Function Calling for Real-Time Weather-Based Music Playlists</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-6W2RG8ED2W"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-6W2RG8ED2W', { 'anonymize_ip': true});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Explained Intuitively - MoodCast: Leveraging OpenAI Parallel Function Calling for Real-Time Weather-Based Music Playlists">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="https://www.arunprakash.org/posts/openai-parallel-function-calling-handson-tools/music.png">
+<meta name="twitter:image-height" content="2048">
+<meta name="twitter:image-width" content="2048">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Explained Intuitively</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/arunslb123" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/arunprakashml" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-right">
+      <h1 class="title">MoodCast: Leveraging OpenAI Parallel Function Calling for Real-Time Weather-Based Music Playlists</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">llm</div>
+                <div class="quarto-category">openai</div>
+                <div class="quarto-category">function-calling</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Arun Prakash </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 3, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#live-data-using-openweathermap-api" id="toc-live-data-using-openweathermap-api" class="nav-link active" data-scroll-target="#live-data-using-openweathermap-api">Live Data using OpenWeatherMap API</a></li>
+  <li><a href="#spotify-music" id="toc-spotify-music" class="nav-link" data-scroll-target="#spotify-music">Spotify Music</a></li>
+  <li><a href="#creating-tools" id="toc-creating-tools" class="nav-link" data-scroll-target="#creating-tools">Creating Tools</a></li>
+  <li><a href="#openai-chat-completion-function-calling" id="toc-openai-chat-completion-function-calling" class="nav-link" data-scroll-target="#openai-chat-completion-function-calling">Openai Chat Completion Function Calling</a>
+  <ul class="collapse">
+  <li><a href="#tool-calls" id="toc-tool-calls" class="nav-link" data-scroll-target="#tool-calls">Tool Calls</a></li>
+  <li><a href="#appending-tool-call-responses-to-the-message-history" id="toc-appending-tool-call-responses-to-the-message-history" class="nav-link" data-scroll-target="#appending-tool-call-responses-to-the-message-history">Appending Tool Call Responses to the Message History</a></li>
+  <li><a href="#second-call-to-get-song-details" id="toc-second-call-to-get-song-details" class="nav-link" data-scroll-target="#second-call-to-get-song-details">Second Call to get Song Details</a></li>
+  <li><a href="#call-the-function-and-append-the-results-to-the-message-history" id="toc-call-the-function-and-append-the-results-to-the-message-history" class="nav-link" data-scroll-target="#call-the-function-and-append-the-results-to-the-message-history">Call the function and append the results to the message history</a></li>
+  <li><a href="#third-response-to-get-the-final-results-as-json-object" id="toc-third-response-to-get-the-final-results-as-json-object" class="nav-link" data-scroll-target="#third-response-to-get-the-final-results-as-json-object">Third Response to get the final results as JSON Object</a></li>
+  </ul></li>
+  <li><a href="#display-model-outputs" id="toc-display-model-outputs" class="nav-link" data-scroll-target="#display-model-outputs">Display Model Outputs</a></li>
+  <li><a href="#putting-it-all-together" id="toc-putting-it-all-together" class="nav-link" data-scroll-target="#putting-it-all-together">Putting it all together</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-right" id="quarto-document-content">
+
+
+
+
+<p>This blog post introduces “MoodCast,” a project that leverages OpenAI’s function calling feature to create real-time, weather-based music playlists. By integrating the OpenWeather and Spotify APIs, MoodCast demonstrates the power and flexibility of OpenAI’s function calling in a practical, engaging application.</p>
+<p>OpenAI’s function calling feature allows developers to describe a function, and the model generates a JSON output containing arguments. This feature doesn’t call any function itself, but it generates the JSON that can be used to call a function from your code. This is a significant advancement as it allows developers to interact with AI in a more structured and systematic way, overcoming the challenges of dealing with unstructured data outputs.</p>
+<p>In the context of MoodCast, this feature is used to interact with the OpenWeather and Spotify APIs, creating a unique blend of AI, weather data, and music. The project serves as a practical example of how OpenAI’s function calling can be used to solve complex problems and create innovative applications.</p>
+<p>This blog post will focus on how to use function calling for OpenAI’s chat completion endpoints. It will provide a detailed guide on how to leverage this feature for your applications, with MoodCast serving as a real-world example. Whether you’re a seasoned developer or a beginner in the field of AI, this post aims to provide valuable insights into the potential of OpenAI’s function calling feature.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="music.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Logo</figcaption>
+</figure>
+</div>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openai</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> OpenAI()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>load_dotenv()</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># openai key</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>OPENAI_API_KEY <span class="op">=</span> os.getenv(<span class="st">"OPENAI_API_KEY"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>openai.api_key <span class="op">=</span> OPENAI_API_KEY</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display, Markdown</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>First let’s check what openai chat completion say about current weather</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"gpt-4-1106-preview"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"what's the current weather in Tokyo?"</span>}</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    temperature<span class="op">=</span><span class="fl">0.3</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>ChatCompletion(id='chatcmpl-8dISDM1s7co80v8cx8z65WwUKkTLQ', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content="I'm sorry, but I cannot provide real-time data such as the current weather. To get the latest weather information for Tokyo or any other location, please check a reliable weather forecasting service or website like the Japan Meteorological Agency, Weather.com, or a weather app on your smartphone. These sources are regularly updated and can provide you with current conditions, forecasts, and any weather alerts that might be in effect.", role='assistant', function_call=None, tool_calls=None))], created=1704376421, model='gpt-4-1106-preview', object='chat.completion', system_fingerprint='fp_3905aa4f79', usage=CompletionUsage(completion_tokens=82, prompt_tokens=15, total_tokens=97))</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>display(Markdown(response.choices[<span class="dv">0</span>].message.content))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p>I’m sorry, but I cannot provide real-time data such as the current weather. To get the latest weather information for Tokyo or any other location, please check a reliable weather forecasting service or website like the Japan Meteorological Agency, Weather.com, or a weather app on your smartphone. These sources are regularly updated and can provide you with current conditions, forecasts, and any weather alerts that might be in effect.</p>
+</div>
+</div>
+<p>As we can see openai does not have any information about the current weather. So we will use openweather api to get the current weather and then use openai chat completion to generate a response.</p>
+<section id="live-data-using-openweathermap-api" class="level1">
+<h1>Live Data using OpenWeatherMap API</h1>
+<p>You can signup here to get your api key https://openweathermap.org/api</p>
+<p>I have stored all the api key infomration in a .env file. You can create your own .env file and store your api key there.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># .env file</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="va">OPENWEATHER_API_KEY</span><span class="op">=</span>your_api_key</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">OPENAI_API_KEY</span> = sk-key</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="ex">SPOTIFY_CLIENT_ID</span> = 4444633gfdggdggdgdgdg</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="ex">SPOTIFY_CLIENT_SECRET</span> = 23rtrrgrdgdr5353terg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_current_weather(city, api_key<span class="op">=</span>os.getenv(<span class="st">"OPENWEATHER_API_KEY"</span>), unit<span class="op">=</span><span class="st">"metric"</span>):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Get the current weather for a given city using OpenWeather API."""</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    base_url <span class="op">=</span> <span class="st">"http://api.openweathermap.org/data/2.5/weather"</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    params <span class="op">=</span> {</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"q"</span>: city,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"appid"</span>: api_key,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"units"</span>: unit</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> requests.get(base_url, params<span class="op">=</span>params)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> response.status_code <span class="op">==</span> <span class="dv">200</span>:</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        data <span class="op">=</span> response.json()</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">#print(data)</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        weather <span class="op">=</span> {</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>            <span class="st">"location"</span>: data[<span class="st">"name"</span>],</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">"temperature"</span>: <span class="bu">int</span>(data[<span class="st">"main"</span>][<span class="st">"temp"</span>]),</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>            <span class="st">"rain"</span>: data[<span class="st">"weather"</span>][<span class="dv">0</span>][<span class="st">"main"</span>],</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>            <span class="st">"unit"</span>: <span class="st">"Celsius"</span> <span class="cf">if</span> unit <span class="op">==</span> <span class="st">"metric"</span> <span class="cf">else</span> <span class="st">"Fahrenheit"</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> json.dumps(weather)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {<span class="st">"location"</span>: city, <span class="st">"temperature"</span>: <span class="st">"unknown"</span>, <span class="st">"unit"</span>: unit, <span class="st">"rain"</span>: <span class="st">"unknown"</span>}</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>api_key <span class="op">=</span> os.getenv(<span class="st">"OPENWEATHER_API_KEY"</span>)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>weather_info <span class="op">=</span> get_current_weather(<span class="st">"Nagercoil"</span>)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(weather_info)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{"location": "Nagercoil", "temperature": 26, "rain": "Clouds", "unit": "Celsius"}</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(weather_info)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>str</code></pre>
+</div>
+</div>
+</section>
+<section id="spotify-music" class="level1">
+<h1>Spotify Music</h1>
+<p>We can create an application on spotify and get the client id and client secret. We can use these credentials to get the access token and then use the access token to get the current weather based playlist.</p>
+<p>https://developer.spotify.com/</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># !pip3 install spotipy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spotipy</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spotipy.oauth2 <span class="im">import</span> SpotifyClientCredentials</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Image, display, Audio</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> search_song(song_name):</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set up your Spotify credentials</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    client_id <span class="op">=</span> os.getenv(<span class="st">"SPOTIFY_CLIENT_ID"</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    client_secret <span class="op">=</span> os.getenv(<span class="st">"SPOTIFY_CLIENT_SECRET"</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Authenticate with Spotify</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    client_credentials_manager <span class="op">=</span> SpotifyClientCredentials(client_id<span class="op">=</span>client_id, client_secret<span class="op">=</span>client_secret)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    sp <span class="op">=</span> spotipy.Spotify(client_credentials_manager<span class="op">=</span>client_credentials_manager)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Search for the song</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> sp.search(q<span class="op">=</span>song_name, limit<span class="op">=</span><span class="dv">1</span>, <span class="bu">type</span><span class="op">=</span><span class="st">'track'</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    tracks <span class="op">=</span> results[<span class="st">'tracks'</span>][<span class="st">'items'</span>]</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Display the first result</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> tracks:</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        track <span class="op">=</span> tracks[<span class="dv">0</span>]</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> json.dumps({</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>            <span class="st">"song"</span>: track[<span class="st">'name'</span>],</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>            <span class="st">"artist"</span>: <span class="st">', '</span>.join(artist[<span class="st">'name'</span>] <span class="cf">for</span> artist <span class="kw">in</span> track[<span class="st">'artists'</span>]),</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">"album"</span>: track[<span class="st">'album'</span>][<span class="st">'name'</span>],</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>            <span class="st">"album_cover_url"</span>: track[<span class="st">'album'</span>][<span class="st">'images'</span>][<span class="dv">0</span>][<span class="st">'url'</span>],</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>            <span class="st">"preview_url"</span>: track[<span class="st">'preview_url'</span>]</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"No song found"</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>song_name <span class="op">=</span> <span class="st">"Appadi podu"</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>song_details <span class="op">=</span> search_song(song_name)</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(song_details)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{"song": "Appadi Podu", "artist": "Vidyasagar, Krishnakumar Kunnath, Anuradha Sriram", "album": "Ghilli (Original Motion Picture Soundtrack)", "album_cover_url": "https://i.scdn.co/image/ab67616d0000b2737bbef42d34fd25b14b2a54ea", "preview_url": "https://p.scdn.co/mp3-preview/df03b78315eaa0c7e20d66ea17dcf1a5fa4e6e3e?cid=706a549bcf8a4575b6e1dd3fc24f5f95"}</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># display song details</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>song_details_json <span class="op">=</span> json.loads(song_details)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>display(Image(url<span class="op">=</span>song_details_json[<span class="st">"album_cover_url"</span>], width<span class="op">=</span><span class="dv">100</span>), )</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>display(Markdown(<span class="ss">f"[</span><span class="sc">{</span>song_details_json[<span class="st">'song'</span>]<span class="sc">}</span><span class="ss"> by </span><span class="sc">{</span>song_details_json[<span class="st">'artist'</span>]<span class="sc">}</span><span class="ss">](</span><span class="sc">{</span>song_details_json[<span class="st">'preview_url'</span>]<span class="sc">}</span><span class="ss">)"</span>))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(song_details_json[<span class="st">"album"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<img src="https://i.scdn.co/image/ab67616d0000b2737bbef42d34fd25b14b2a54ea" width="100">
+</div>
+<div class="cell-output cell-output-display">
+<p><a href="https://p.scdn.co/mp3-preview/df03b78315eaa0c7e20d66ea17dcf1a5fa4e6e3e?cid=706a549bcf8a4575b6e1dd3fc24f5f95">Appadi Podu by Vidyasagar, Krishnakumar Kunnath, Anuradha Sriram</a></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ghilli (Original Motion Picture Soundtrack)</code></pre>
+</div>
+</div>
+</section>
+<section id="creating-tools" class="level1">
+<h1>Creating Tools</h1>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>available_tools <span class="op">=</span> [</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>            <span class="st">"type"</span>: <span class="st">"function"</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">"function"</span>: {</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>                <span class="st">"name"</span>: <span class="st">"get_current_weather"</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>                <span class="st">"description"</span>: <span class="st">"Get the current weather in a given location, use farhenheit"</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>                <span class="st">"parameters"</span>: {</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"type"</span>: <span class="st">"object"</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"properties"</span>: {</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"city"</span>: {</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"type"</span>: <span class="st">"string"</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"description"</span>: <span class="st">"The city to get the weather for"</span>,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>                        },</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"unit"</span>: {</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"type"</span>: <span class="st">"string"</span>,</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"description"</span>: <span class="st">"The unit to use for the temperature, metric is default"</span>,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"enum"</span>: [<span class="st">"metric"</span>, <span class="st">"imperial"</span>],</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>                        }</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>                    },</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"required"</span>: [<span class="st">"city"</span>, <span class="st">"unit"</span>],</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>                },</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>            },</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">"type"</span>: <span class="st">"function"</span>,</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>            <span class="st">"function"</span>: {</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>                <span class="st">"name"</span>: <span class="st">"search_song"</span>,</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>                <span class="st">"description"</span>: <span class="st">"Search for a song on Spotify and display its details including the artist, album, album cover, and a preview link if available"</span>,</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>                <span class="st">"parameters"</span>: {</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"type"</span>: <span class="st">"object"</span>,</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"properties"</span>: {</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"song_name"</span>: {</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"type"</span>: <span class="st">"string"</span>,</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"description"</span>: <span class="st">"The name of the song to search for"</span>,</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>                        }</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>                    },</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"required"</span>: [<span class="st">"song_name"</span>],</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>                }</span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>    ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the MoodCast project, JSON is utilized to define tools for function descriptions, which are essential for the OpenAI function calling feature. This feature enables the AI to generate structured data outputs, specifically JSON objects containing arguments for functions described in the API call. For instance, the <code>get_current_weather</code> function is defined to fetch current weather data for a specified city, while the <code>search_song</code> function is designed to search for songs on Spotify. These function descriptions are crucial as they guide the AI in generating the correct JSON output that can be used to call functions from the code, thereby facilitating the integration with OpenWeather and Spotify APIs.</p>
+<p>To effectively use function calling with OpenAI, developers must clearly define their functions, including the name, description, and parameters, in a JSON format. This structured approach allows the AI to understand the context and generate the appropriate JSON output. The OpenAI API documentation provides guidelines on how to describe functions for function calling, emphasizing the importance of a clear and detailed function schema to ensure accurate and useful responses from the AI model.</p>
+<p>For MoodCast, this means that by defining functions like <code>get_current_weather</code> and <code>search_song</code> with precise parameters and descriptions, the AI can produce JSON outputs that correspond to these functions. These outputs can then be used to make API calls to OpenWeather and Spotify, respectively, to create a music playlist that matches the current weather conditions, showcasing a practical application of OpenAI’s function calling capability in a real-world project.</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>city <span class="op">=</span> <span class="st">"Nagercoil"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="openai-chat-completion-function-calling" class="level1">
+<h1>Openai Chat Completion Function Calling</h1>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>messages <span class="op">=</span> [</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"role"</span>: <span class="st">"system"</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"content"</span>: <span class="st">"A Song Suggestions Assistant based on local weather in metric and local language"</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"content"</span>: <span class="ss">f"""I am in </span><span class="sc">{</span>city<span class="sc">}</span><span class="ss">, suggest 5 songs based on their current weather and their local language</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="ss">        and display their album details such as album cover, artist, and preview link.</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="ss">        return a json object with keys as song, artist, album, album_cover_url, and preview_url and reason</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="ss">        key as song_suggestions and value as a list of json objects with keys as song, artist, album, album_cover_url, preview_url, and reason</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="ss">        """</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>tools <span class="op">=</span> available_tools</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"gpt-4-1106-preview"</span>,</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>messages,</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    tools<span class="op">=</span>tools,</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    tool_choice<span class="op">=</span><span class="st">"auto"</span>, </span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    temperature<span class="op">=</span><span class="fl">0.9</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>response_message <span class="op">=</span> response.choices[<span class="dv">0</span>].message</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>tool_calls <span class="op">=</span> response_message.tool_calls</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can also force the model to use some particular function by using <code>tool_choice = {"type": "function", "function": {"name": "my_function"}}</code> forces the model to call that function.</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>response</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>ChatCompletion(id='chatcmpl-8dISaihzl1Q2k7S09VBau44EwlMMv', choices=[Choice(finish_reason='tool_calls', index=0, logprobs=None, message=ChatCompletionMessage(content=None, role='assistant', function_call=None, tool_calls=[ChatCompletionMessageToolCall(id='call_FmoMsWB1hklh6GvT9QmrTX3k', function=Function(arguments='{\n  "city": "Nagercoil",\n  "unit": "metric"\n}', name='get_current_weather'), type='function')]))], created=1704376444, model='gpt-4-1106-preview', object='chat.completion', system_fingerprint='fp_3905aa4f79', usage=CompletionUsage(completion_tokens=28, prompt_tokens=249, total_tokens=277))</code></pre>
+</div>
+</div>
+<p>As when openai gonna use function calling, you can see the <code>finish_reason</code> in the response, which indicates we have to call the function with the given arguments and get the results, and pass it to the model again</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>response_message</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>ChatCompletionMessage(content=None, role='assistant', function_call=None, tool_calls=[ChatCompletionMessageToolCall(id='call_FmoMsWB1hklh6GvT9QmrTX3k', function=Function(arguments='{\n  "city": "Nagercoil",\n  "unit": "metric"\n}', name='get_current_weather'), type='function')])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>response_message.tool_calls</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>[ChatCompletionMessageToolCall(id='call_FmoMsWB1hklh6GvT9QmrTX3k', function=Function(arguments='{\n  "city": "Nagercoil",\n  "unit": "metric"\n}', name='get_current_weather'), type='function')]</code></pre>
+</div>
+</div>
+<section id="tool-calls" class="level3">
+<h3 class="anchored" data-anchor-id="tool-calls">Tool Calls</h3>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tool <span class="kw">in</span> tool_calls:</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Tool ID: </span><span class="sc">{</span>tool<span class="sc">.</span><span class="bu">id</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Call the function: </span><span class="sc">{</span>tool<span class="sc">.</span>function<span class="sc">.</span>name<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Parameters: </span><span class="sc">{</span>tool<span class="sc">.</span>function<span class="sc">.</span>arguments<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tool ID: call_FmoMsWB1hklh6GvT9QmrTX3k
+Call the function: get_current_weather
+Parameters: {
+  "city": "Nagercoil",
+  "unit": "metric"
+}</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>function_name <span class="op">=</span> tool_calls[<span class="dv">0</span>].function.name</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>function_args <span class="op">=</span> tool_calls[<span class="dv">0</span>].function.arguments</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>function_name, function_args</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>('get_current_weather', '{\n  "city": "Nagercoil",\n  "unit": "metric"\n}')</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>function_args <span class="op">=</span> json.loads(function_args)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>function_args</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>{'city': 'Nagercoil', 'unit': 'metric'}</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>available_functions <span class="op">=</span> {</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">"get_current_weather"</span>: get_current_weather,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"search_song"</span>: search_song,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>function_response <span class="op">=</span> available_functions[function_name](<span class="op">**</span>function_args)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(function_response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{"location": "Nagercoil", "temperature": 26, "rain": "Clouds", "unit": "Celsius"}</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>messages</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>[{'role': 'system',
+  'content': 'A Song Suggestions Assistant based on local weather in metric and local language'},
+ {'role': 'user',
+  'content': 'I am in Nagercoil, suggest 5 songs based on their current weather and their local language\n        and display their album details such as album cover, artist, and preview link.\n        return a json object with keys as song, artist, album, album_cover_url, and preview_url and reason\n\n        key as song_suggestions and value as a list of json objects with keys as song, artist, album, album_cover_url, preview_url, and reason\n        '}]</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>messages.append(response_message)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>messages</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>[{'role': 'system',
+  'content': 'A Song Suggestions Assistant based on local weather in metric and local language'},
+ {'role': 'user',
+  'content': 'I am in Nagercoil, suggest 5 songs based on their current weather and their local language\n        and display their album details such as album cover, artist, and preview link.\n        return a json object with keys as song, artist, album, album_cover_url, and preview_url and reason\n\n        key as song_suggestions and value as a list of json objects with keys as song, artist, album, album_cover_url, preview_url, and reason\n        '},
+ ChatCompletionMessage(content=None, role='assistant', function_call=None, tool_calls=[ChatCompletionMessageToolCall(id='call_FmoMsWB1hklh6GvT9QmrTX3k', function=Function(arguments='{\n  "city": "Nagercoil",\n  "unit": "metric"\n}', name='get_current_weather'), type='function')])]</code></pre>
+</div>
+</div>
+</section>
+<section id="appending-tool-call-responses-to-the-message-history" class="level3">
+<h3 class="anchored" data-anchor-id="appending-tool-call-responses-to-the-message-history">Appending Tool Call Responses to the Message History</h3>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>messages.append(</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>                {</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"tool_call_id"</span>: tool_calls[<span class="dv">0</span>].<span class="bu">id</span>,</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"role"</span>: <span class="st">"tool"</span>,</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"name"</span>: function_name,</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"content"</span>: function_response,</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>                }</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>messages</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>[{'role': 'system',
+  'content': 'A Song Suggestions Assistant based on local weather in metric and local language'},
+ {'role': 'user',
+  'content': 'I am in Nagercoil, suggest 5 songs based on their current weather and their local language\n        and display their album details such as album cover, artist, and preview link.\n        return a json object with keys as song, artist, album, album_cover_url, and preview_url and reason\n\n        key as song_suggestions and value as a list of json objects with keys as song, artist, album, album_cover_url, preview_url, and reason\n        '},
+ ChatCompletionMessage(content=None, role='assistant', function_call=None, tool_calls=[ChatCompletionMessageToolCall(id='call_FmoMsWB1hklh6GvT9QmrTX3k', function=Function(arguments='{\n  "city": "Nagercoil",\n  "unit": "metric"\n}', name='get_current_weather'), type='function')]),
+ {'tool_call_id': 'call_FmoMsWB1hklh6GvT9QmrTX3k',
+  'role': 'tool',
+  'name': 'get_current_weather',
+  'content': '{"location": "Nagercoil", "temperature": 26, "rain": "Clouds", "unit": "Celsius"}'}]</code></pre>
+</div>
+</div>
+</section>
+<section id="second-call-to-get-song-details" class="level3">
+<h3 class="anchored" data-anchor-id="second-call-to-get-song-details">Second Call to get Song Details</h3>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>second_response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>            model<span class="op">=</span><span class="st">"gpt-4-1106-preview"</span>,</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>            messages<span class="op">=</span>messages,</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>            tools<span class="op">=</span>available_tools,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>            tool_choice<span class="op">=</span><span class="st">"auto"</span>,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(second_response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>ChatCompletion(id='chatcmpl-8dISdx8ctxPgd8bD3BDnYCEOmialh', choices=[Choice(finish_reason='tool_calls', index=0, logprobs=None, message=ChatCompletionMessage(content='The current weather in Nagercoil is 26 degrees Celsius with clouds. Based on this weather, I will suggest songs that convey a sense of peace, comfort, and perhaps contemplation, which is often associated with cloudy days. The local language in Nagercoil is Tamil, so I will be selecting Tamil songs that match the weather mood.\n\nI will now search for suitable Tamil songs and provide their details. Please wait a moment while I process this information.', role='assistant', function_call=None, tool_calls=[ChatCompletionMessageToolCall(id='call_UEVy6FVIVy3V2kwcD36tDRvv', function=Function(arguments='{"song_name": "Mazhai Kuruvi"}', name='search_song'), type='function'), ChatCompletionMessageToolCall(id='call_XKVJrqRjh1aafYldWeBWNnG2', function=Function(arguments='{"song_name": "Nenjukulle"}', name='search_song'), type='function'), ChatCompletionMessageToolCall(id='call_I5Gnz9hvK1JuX8cSPFH14aL8', function=Function(arguments='{"song_name": "Uyire Uyire"}', name='search_song'), type='function'), ChatCompletionMessageToolCall(id='call_KrUYtZqTDopUCua3dRbrOC9B', function=Function(arguments='{"song_name": "Vaseegara"}', name='search_song'), type='function'), ChatCompletionMessageToolCall(id='call_w724Il0i6dFCDLG4l4OmPY4e', function=Function(arguments='{"song_name": "Aaromale"}', name='search_song'), type='function')]))], created=1704376447, model='gpt-4-1106-preview', object='chat.completion', system_fingerprint='fp_c6efb4aa39', usage=CompletionUsage(completion_tokens=279, prompt_tokens=307, total_tokens=586))</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>display(Markdown(second_response.choices[<span class="dv">0</span>].message.content))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p>The current weather in Nagercoil is 26 degrees Celsius with clouds. Based on this weather, I will suggest songs that convey a sense of peace, comfort, and perhaps contemplation, which is often associated with cloudy days. The local language in Nagercoil is Tamil, so I will be selecting Tamil songs that match the weather mood.</p>
+<p>I will now search for suitable Tamil songs and provide their details. Please wait a moment while I process this information.</p>
+</div>
+</div>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>tool_calls <span class="op">=</span> second_response.choices[<span class="dv">0</span>].message.tool_calls</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tool <span class="kw">in</span> tool_calls:</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Tool ID: </span><span class="sc">{</span>tool<span class="sc">.</span><span class="bu">id</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Call the function: </span><span class="sc">{</span>tool<span class="sc">.</span>function<span class="sc">.</span>name<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Parameters: </span><span class="sc">{</span>tool<span class="sc">.</span>function<span class="sc">.</span>arguments<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tool ID: call_UEVy6FVIVy3V2kwcD36tDRvv
+Call the function: search_song
+Parameters: {"song_name": "Mazhai Kuruvi"}
+Tool ID: call_XKVJrqRjh1aafYldWeBWNnG2
+Call the function: search_song
+Parameters: {"song_name": "Nenjukulle"}
+Tool ID: call_I5Gnz9hvK1JuX8cSPFH14aL8
+Call the function: search_song
+Parameters: {"song_name": "Uyire Uyire"}
+Tool ID: call_KrUYtZqTDopUCua3dRbrOC9B
+Call the function: search_song
+Parameters: {"song_name": "Vaseegara"}
+Tool ID: call_w724Il0i6dFCDLG4l4OmPY4e
+Call the function: search_song
+Parameters: {"song_name": "Aaromale"}</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>messages.append(second_response.choices[<span class="dv">0</span>].message)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="call-the-function-and-append-the-results-to-the-message-history" class="level3">
+<h3 class="anchored" data-anchor-id="call-the-function-and-append-the-results-to-the-message-history">Call the function and append the results to the message history</h3>
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tool <span class="kw">in</span> tool_calls:</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    function_name <span class="op">=</span> tool.function.name</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    function_args <span class="op">=</span> json.loads(tool.function.arguments)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    function_response <span class="op">=</span> available_functions[function_name](<span class="op">**</span>function_args)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    messages.append(</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"tool_call_id"</span>: tool.<span class="bu">id</span>,</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"role"</span>: <span class="st">"tool"</span>,</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"name"</span>: function_name,</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">"content"</span>: function_response,</span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(function_response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{"song": "Mazhai Kuruvi", "artist": "A.R. Rahman", "album": "Chekka Chivantha Vaanam (Original Motion Picture Soundtrack)", "album_cover_url": "https://i.scdn.co/image/ab67616d0000b2735234d8419de0ffdccc8c27a7", "preview_url": "https://p.scdn.co/mp3-preview/771e747c73fc6cd5914a4e447f9daf3bd74e38a5?cid=706a549bcf8a4575b6e1dd3fc24f5f95"}
+{"song": "Nenjukulle", "artist": "Ashbel Peter, Theertha", "album": "Nenjukulle", "album_cover_url": "https://i.scdn.co/image/ab67616d0000b273d3d692e38621d741606588e7", "preview_url": "https://p.scdn.co/mp3-preview/d48678e7eef2bebd5a099d2b6b1ff5dd299ff102?cid=706a549bcf8a4575b6e1dd3fc24f5f95"}
+{"song": "Uyire Uyire", "artist": "Saagar, Na.Muthukumar", "album": "Santhosh Subramaniyam (Original Motion Picture Soundtrack)", "album_cover_url": "https://i.scdn.co/image/ab67616d0000b2738b895bdb8ccefee6ab65114b", "preview_url": "https://p.scdn.co/mp3-preview/c4e812236497ce1f72610be2af10740ad6ecead6?cid=706a549bcf8a4575b6e1dd3fc24f5f95"}
+{"song": "Vaseegara", "artist": "Bombay Jayashri", "album": "Minnalae (Original Motion Picture Soundtrack)", "album_cover_url": "https://i.scdn.co/image/ab67616d0000b273102f02fa7e7ded2bc5f65653", "preview_url": "https://p.scdn.co/mp3-preview/2db5c05f48a7214b56c8eed843103ae3f241e00e?cid=706a549bcf8a4575b6e1dd3fc24f5f95"}
+{"song": "Aaromale", "artist": "A.R. Rahman, Alphons Joseph", "album": "Vinnathaandi Varuvaayaa (Original Motion Picture Soundtrack)", "album_cover_url": "https://i.scdn.co/image/ab67616d0000b27397838a7eeb5f477cfc6707a5", "preview_url": "https://p.scdn.co/mp3-preview/ed07e1b3e3fe14b55e29c10c5413dd9e04fbe1e5?cid=706a549bcf8a4575b6e1dd3fc24f5f95"}</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>messages</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="30">
+<pre><code>[{'role': 'system',
+  'content': 'A Song Suggestions Assistant based on local weather in metric and local language'},
+ {'role': 'user',
+  'content': 'I am in Nagercoil, suggest 5 songs based on their current weather and their local language\n        and display their album details such as album cover, artist, and preview link.\n        return a json object with keys as song, artist, album, album_cover_url, and preview_url and reason\n\n        key as song_suggestions and value as a list of json objects with keys as song, artist, album, album_cover_url, preview_url, and reason\n        '},
+ ChatCompletionMessage(content=None, role='assistant', function_call=None, tool_calls=[ChatCompletionMessageToolCall(id='call_FmoMsWB1hklh6GvT9QmrTX3k', function=Function(arguments='{\n  "city": "Nagercoil",\n  "unit": "metric"\n}', name='get_current_weather'), type='function')]),
+ {'tool_call_id': 'call_FmoMsWB1hklh6GvT9QmrTX3k',
+  'role': 'tool',
+  'name': 'get_current_weather',
+  'content': '{"location": "Nagercoil", "temperature": 26, "rain": "Clouds", "unit": "Celsius"}'},
+ ChatCompletionMessage(content='The current weather in Nagercoil is 26 degrees Celsius with clouds. Based on this weather, I will suggest songs that convey a sense of peace, comfort, and perhaps contemplation, which is often associated with cloudy days. The local language in Nagercoil is Tamil, so I will be selecting Tamil songs that match the weather mood.\n\nI will now search for suitable Tamil songs and provide their details. Please wait a moment while I process this information.', role='assistant', function_call=None, tool_calls=[ChatCompletionMessageToolCall(id='call_UEVy6FVIVy3V2kwcD36tDRvv', function=Function(arguments='{"song_name": "Mazhai Kuruvi"}', name='search_song'), type='function'), ChatCompletionMessageToolCall(id='call_XKVJrqRjh1aafYldWeBWNnG2', function=Function(arguments='{"song_name": "Nenjukulle"}', name='search_song'), type='function'), ChatCompletionMessageToolCall(id='call_I5Gnz9hvK1JuX8cSPFH14aL8', function=Function(arguments='{"song_name": "Uyire Uyire"}', name='search_song'), type='function'), ChatCompletionMessageToolCall(id='call_KrUYtZqTDopUCua3dRbrOC9B', function=Function(arguments='{"song_name": "Vaseegara"}', name='search_song'), type='function'), ChatCompletionMessageToolCall(id='call_w724Il0i6dFCDLG4l4OmPY4e', function=Function(arguments='{"song_name": "Aaromale"}', name='search_song'), type='function')]),
+ {'tool_call_id': 'call_UEVy6FVIVy3V2kwcD36tDRvv',
+  'role': 'tool',
+  'name': 'search_song',
+  'content': '{"song": "Mazhai Kuruvi", "artist": "A.R. Rahman", "album": "Chekka Chivantha Vaanam (Original Motion Picture Soundtrack)", "album_cover_url": "https://i.scdn.co/image/ab67616d0000b2735234d8419de0ffdccc8c27a7", "preview_url": "https://p.scdn.co/mp3-preview/771e747c73fc6cd5914a4e447f9daf3bd74e38a5?cid=706a549bcf8a4575b6e1dd3fc24f5f95"}'},
+ {'tool_call_id': 'call_XKVJrqRjh1aafYldWeBWNnG2',
+  'role': 'tool',
+  'name': 'search_song',
+  'content': '{"song": "Nenjukulle", "artist": "Ashbel Peter, Theertha", "album": "Nenjukulle", "album_cover_url": "https://i.scdn.co/image/ab67616d0000b273d3d692e38621d741606588e7", "preview_url": "https://p.scdn.co/mp3-preview/d48678e7eef2bebd5a099d2b6b1ff5dd299ff102?cid=706a549bcf8a4575b6e1dd3fc24f5f95"}'},
+ {'tool_call_id': 'call_I5Gnz9hvK1JuX8cSPFH14aL8',
+  'role': 'tool',
+  'name': 'search_song',
+  'content': '{"song": "Uyire Uyire", "artist": "Saagar, Na.Muthukumar", "album": "Santhosh Subramaniyam (Original Motion Picture Soundtrack)", "album_cover_url": "https://i.scdn.co/image/ab67616d0000b2738b895bdb8ccefee6ab65114b", "preview_url": "https://p.scdn.co/mp3-preview/c4e812236497ce1f72610be2af10740ad6ecead6?cid=706a549bcf8a4575b6e1dd3fc24f5f95"}'},
+ {'tool_call_id': 'call_KrUYtZqTDopUCua3dRbrOC9B',
+  'role': 'tool',
+  'name': 'search_song',
+  'content': '{"song": "Vaseegara", "artist": "Bombay Jayashri", "album": "Minnalae (Original Motion Picture Soundtrack)", "album_cover_url": "https://i.scdn.co/image/ab67616d0000b273102f02fa7e7ded2bc5f65653", "preview_url": "https://p.scdn.co/mp3-preview/2db5c05f48a7214b56c8eed843103ae3f241e00e?cid=706a549bcf8a4575b6e1dd3fc24f5f95"}'},
+ {'tool_call_id': 'call_w724Il0i6dFCDLG4l4OmPY4e',
+  'role': 'tool',
+  'name': 'search_song',
+  'content': '{"song": "Aaromale", "artist": "A.R. Rahman, Alphons Joseph", "album": "Vinnathaandi Varuvaayaa (Original Motion Picture Soundtrack)", "album_cover_url": "https://i.scdn.co/image/ab67616d0000b27397838a7eeb5f477cfc6707a5", "preview_url": "https://p.scdn.co/mp3-preview/ed07e1b3e3fe14b55e29c10c5413dd9e04fbe1e5?cid=706a549bcf8a4575b6e1dd3fc24f5f95"}'}]</code></pre>
+</div>
+</div>
+</section>
+<section id="third-response-to-get-the-final-results-as-json-object" class="level3">
+<h3 class="anchored" data-anchor-id="third-response-to-get-the-final-results-as-json-object">Third Response to get the final results as JSON Object</h3>
+<div class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>third_response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>                model<span class="op">=</span><span class="st">"gpt-4-1106-preview"</span>,</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>                messages<span class="op">=</span>messages,</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>                response_format<span class="op">=</span>{<span class="st">"type"</span>:<span class="st">"json_object"</span>}</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>            )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>third_response.choices[<span class="dv">0</span>].message.content</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<pre><code>'\n{\n    "song_suggestions": [\n        {\n            "song": "Mazhai Kuruvi",\n            "artist": "A.R. Rahman",\n            "album": "Chekka Chivantha Vaanam (Original Motion Picture Soundtrack)",\n            "album_cover_url": "https://i.scdn.co/image/ab67616d0000b2735234d8419de0ffdccc8c27a7",\n            "preview_url": "https://p.scdn.co/mp3-preview/771e747c73fc6cd5914a4e447f9daf3bd74e38a5?cid=706a549bcf8a4575b6e1dd3fc24f5f95",\n            "reason": "This song has a soothing melody that resonates well with a cloudy and peaceful atmosphere."\n        },\n        {\n            "song": "Nenjukulle",\n            "artist": "A.R. Rahman, Shakthisree Gopalan",\n            "album": "Kadal (Original Motion Picture Soundtrack)",\n            "album_cover_url": "https://i.scdn.co/image/ab67616d0000b273d3d692e38621d741606588e7",\n            "preview_url": "https://p.scdn.co/mp3-preview/d48678e7eef2bebd5a099d2b6b1ff5dd299ff102?cid=706a549bcf8a4575b6e1dd3fc24f5f95",\n            "reason": "The backdrop of the ocean in the lyrics, combined with the cloudy weather theme, provides a tranquil listening experience."\n        },\n        {\n            "song": "Uyire Uyire",\n            "artist": "Hariharan, Bombay Jayashri",\n            "album": "Bombay (Original Motion Picture Soundtrack)",\n            "album_cover_url": "https://i.scdn.co/image/ab67616d0000b2738b895bdb8ccefee6ab65114b",\n            "preview_url": "https://p.scdn.co/mp3-preview/c4e812236497ce1f72610be2af10740ad6ecead6?cid=706a549bcf8a4575b6e1dd3fc24f5f95",\n            "reason": "Its lyrical depth and the warmth of the composition blend nicely with the introspective mood of a cloudy day."\n        },\n        {\n            "song": "Vaseegara",\n            "artist": "Bombay Jayashri",\n            "album": "Minnalae (Original Motion Picture Soundtrack)",\n            "album_cover_url": "https://i.scdn.co/image/ab67616d0000b273102f02fa7e7ded2bc5f65653",\n            "preview_url": "https://p.scdn.co/mp3-preview/2db5c05f48a7214b56c8eed843103ae3f241e00e?cid=706a549bcf8a4575b6e1dd3fc24f5f95",\n            "reason": "This classic love ballad with its serene mood is perfect for a cloudy day lounging."\n        },\n        {\n            "song": "Aaromale",\n            "artist": "Alphons Joseph",\n            "album": "Vinnaithaandi Varuvaayaa (Original Motion Picture Soundtrack)",\n            "album_cover_url": "https://i.scdn.co/image/ab67616d0000b27397838a7eeb5f477cfc6707a5",\n            "preview_url": "https://p.scdn.co/mp3-preview/ed07e1b3e3fe14b55e29c10c5413dd9e04fbe1e5?cid=706a549bcf8a4575b6e1dd3fc24f5f95",\n            "reason": "A refreshing song that\'s well-suited for when the clouds are out and you crave an uplifting atmosphere."\n        }\n    ]\n}'</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># display song details</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>song_details_json <span class="op">=</span> json.loads(third_response.choices[<span class="dv">0</span>].message.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>song_details_json</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="34">
+<pre><code>{'song_suggestions': [{'song': 'Mazhai Kuruvi',
+   'artist': 'A.R. Rahman',
+   'album': 'Chekka Chivantha Vaanam (Original Motion Picture Soundtrack)',
+   'album_cover_url': 'https://i.scdn.co/image/ab67616d0000b2735234d8419de0ffdccc8c27a7',
+   'preview_url': 'https://p.scdn.co/mp3-preview/771e747c73fc6cd5914a4e447f9daf3bd74e38a5?cid=706a549bcf8a4575b6e1dd3fc24f5f95',
+   'reason': 'This song has a soothing melody that resonates well with a cloudy and peaceful atmosphere.'},
+  {'song': 'Nenjukulle',
+   'artist': 'A.R. Rahman, Shakthisree Gopalan',
+   'album': 'Kadal (Original Motion Picture Soundtrack)',
+   'album_cover_url': 'https://i.scdn.co/image/ab67616d0000b273d3d692e38621d741606588e7',
+   'preview_url': 'https://p.scdn.co/mp3-preview/d48678e7eef2bebd5a099d2b6b1ff5dd299ff102?cid=706a549bcf8a4575b6e1dd3fc24f5f95',
+   'reason': 'The backdrop of the ocean in the lyrics, combined with the cloudy weather theme, provides a tranquil listening experience.'},
+  {'song': 'Uyire Uyire',
+   'artist': 'Hariharan, Bombay Jayashri',
+   'album': 'Bombay (Original Motion Picture Soundtrack)',
+   'album_cover_url': 'https://i.scdn.co/image/ab67616d0000b2738b895bdb8ccefee6ab65114b',
+   'preview_url': 'https://p.scdn.co/mp3-preview/c4e812236497ce1f72610be2af10740ad6ecead6?cid=706a549bcf8a4575b6e1dd3fc24f5f95',
+   'reason': 'Its lyrical depth and the warmth of the composition blend nicely with the introspective mood of a cloudy day.'},
+  {'song': 'Vaseegara',
+   'artist': 'Bombay Jayashri',
+   'album': 'Minnalae (Original Motion Picture Soundtrack)',
+   'album_cover_url': 'https://i.scdn.co/image/ab67616d0000b273102f02fa7e7ded2bc5f65653',
+   'preview_url': 'https://p.scdn.co/mp3-preview/2db5c05f48a7214b56c8eed843103ae3f241e00e?cid=706a549bcf8a4575b6e1dd3fc24f5f95',
+   'reason': 'This classic love ballad with its serene mood is perfect for a cloudy day lounging.'},
+  {'song': 'Aaromale',
+   'artist': 'Alphons Joseph',
+   'album': 'Vinnaithaandi Varuvaayaa (Original Motion Picture Soundtrack)',
+   'album_cover_url': 'https://i.scdn.co/image/ab67616d0000b27397838a7eeb5f477cfc6707a5',
+   'preview_url': 'https://p.scdn.co/mp3-preview/ed07e1b3e3fe14b55e29c10c5413dd9e04fbe1e5?cid=706a549bcf8a4575b6e1dd3fc24f5f95',
+   'reason': "A refreshing song that's well-suited for when the clouds are out and you crave an uplifting atmosphere."}]}</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(song_details_json)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="35">
+<pre><code>dict</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="display-model-outputs" class="level1">
+<h1>Display Model Outputs</h1>
+<div class="cell" data-execution_count="36">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Displaying each song suggestion with its details</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> song <span class="kw">in</span> song_details_json[<span class="st">"song_suggestions"</span>]:</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="ss">f"### </span><span class="sc">{</span>song[<span class="st">'song'</span>]<span class="sc">}</span><span class="ss">"</span>))</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="ss">f"**Artist:** </span><span class="sc">{</span>song[<span class="st">'artist'</span>]<span class="sc">}</span><span class="ss">"</span>))</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="ss">f"**Album:** </span><span class="sc">{</span>song[<span class="st">'album'</span>]<span class="sc">}</span><span class="ss">"</span>))</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>    display(Image(url<span class="op">=</span>song[<span class="st">'album_cover_url'</span>], width<span class="op">=</span><span class="dv">200</span>))</span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="ss">f"[Preview the song](</span><span class="sc">{</span>song[<span class="st">'preview_url'</span>]<span class="sc">}</span><span class="ss">)"</span>))</span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="ss">f"**Reason:** </span><span class="sc">{</span>song[<span class="st">'reason'</span>]<span class="sc">}</span><span class="ss">"</span>))</span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="st">"----"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="mazhai-kuruvi" class="level3 cell-output cell-output-display">
+<h3 class="anchored" data-anchor-id="mazhai-kuruvi">Mazhai Kuruvi</h3>
+</section>
+<div class="cell-output cell-output-display">
+<p><strong>Artist:</strong> A.R. Rahman</p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Album:</strong> Chekka Chivantha Vaanam (Original Motion Picture Soundtrack)</p>
+</div>
+<div class="cell-output cell-output-display">
+<img src="https://i.scdn.co/image/ab67616d0000b2735234d8419de0ffdccc8c27a7" width="200">
+</div>
+<div class="cell-output cell-output-display">
+<p><a href="https://p.scdn.co/mp3-preview/771e747c73fc6cd5914a4e447f9daf3bd74e38a5?cid=706a549bcf8a4575b6e1dd3fc24f5f95">Preview the song</a></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Reason:</strong> This song has a soothing melody that resonates well with a cloudy and peaceful atmosphere.</p>
+</div>
+<div class="cell-output cell-output-display">
+<hr>
+</div>
+<section id="nenjukulle" class="level3 cell-output cell-output-display">
+<h3 class="anchored" data-anchor-id="nenjukulle">Nenjukulle</h3>
+</section>
+<div class="cell-output cell-output-display">
+<p><strong>Artist:</strong> A.R. Rahman, Shakthisree Gopalan</p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Album:</strong> Kadal (Original Motion Picture Soundtrack)</p>
+</div>
+<div class="cell-output cell-output-display">
+<img src="https://i.scdn.co/image/ab67616d0000b273d3d692e38621d741606588e7" width="200">
+</div>
+<div class="cell-output cell-output-display">
+<p><a href="https://p.scdn.co/mp3-preview/d48678e7eef2bebd5a099d2b6b1ff5dd299ff102?cid=706a549bcf8a4575b6e1dd3fc24f5f95">Preview the song</a></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Reason:</strong> The backdrop of the ocean in the lyrics, combined with the cloudy weather theme, provides a tranquil listening experience.</p>
+</div>
+<div class="cell-output cell-output-display">
+<hr>
+</div>
+<section id="uyire-uyire" class="level3 cell-output cell-output-display">
+<h3 class="anchored" data-anchor-id="uyire-uyire">Uyire Uyire</h3>
+</section>
+<div class="cell-output cell-output-display">
+<p><strong>Artist:</strong> Hariharan, Bombay Jayashri</p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Album:</strong> Bombay (Original Motion Picture Soundtrack)</p>
+</div>
+<div class="cell-output cell-output-display">
+<img src="https://i.scdn.co/image/ab67616d0000b2738b895bdb8ccefee6ab65114b" width="200">
+</div>
+<div class="cell-output cell-output-display">
+<p><a href="https://p.scdn.co/mp3-preview/c4e812236497ce1f72610be2af10740ad6ecead6?cid=706a549bcf8a4575b6e1dd3fc24f5f95">Preview the song</a></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Reason:</strong> Its lyrical depth and the warmth of the composition blend nicely with the introspective mood of a cloudy day.</p>
+</div>
+<div class="cell-output cell-output-display">
+<hr>
+</div>
+<section id="vaseegara" class="level3 cell-output cell-output-display">
+<h3 class="anchored" data-anchor-id="vaseegara">Vaseegara</h3>
+</section>
+<div class="cell-output cell-output-display">
+<p><strong>Artist:</strong> Bombay Jayashri</p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Album:</strong> Minnalae (Original Motion Picture Soundtrack)</p>
+</div>
+<div class="cell-output cell-output-display">
+<img src="https://i.scdn.co/image/ab67616d0000b273102f02fa7e7ded2bc5f65653" width="200">
+</div>
+<div class="cell-output cell-output-display">
+<p><a href="https://p.scdn.co/mp3-preview/2db5c05f48a7214b56c8eed843103ae3f241e00e?cid=706a549bcf8a4575b6e1dd3fc24f5f95">Preview the song</a></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Reason:</strong> This classic love ballad with its serene mood is perfect for a cloudy day lounging.</p>
+</div>
+<div class="cell-output cell-output-display">
+<hr>
+</div>
+<section id="aaromale" class="level3 cell-output cell-output-display">
+<h3 class="anchored" data-anchor-id="aaromale">Aaromale</h3>
+</section>
+<div class="cell-output cell-output-display">
+<p><strong>Artist:</strong> Alphons Joseph</p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Album:</strong> Vinnaithaandi Varuvaayaa (Original Motion Picture Soundtrack)</p>
+</div>
+<div class="cell-output cell-output-display">
+<img src="https://i.scdn.co/image/ab67616d0000b27397838a7eeb5f477cfc6707a5" width="200">
+</div>
+<div class="cell-output cell-output-display">
+<p><a href="https://p.scdn.co/mp3-preview/ed07e1b3e3fe14b55e29c10c5413dd9e04fbe1e5?cid=706a549bcf8a4575b6e1dd3fc24f5f95">Preview the song</a></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Reason:</strong> A refreshing song that’s well-suited for when the clouds are out and you crave an uplifting atmosphere.</p>
+</div>
+<div class="cell-output cell-output-display">
+<hr>
+</div>
+</div>
+</section>
+<section id="putting-it-all-together" class="level1">
+<h1>Putting it all together</h1>
+<div class="cell" data-execution_count="37">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_weather_music(city):</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>    messages <span class="op">=</span> [</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">"role"</span>: <span class="st">"system"</span>,</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">"content"</span>: <span class="st">"A Song Suggestions Assistant based on local weather in metric and local language"</span></span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"content"</span>: <span class="ss">f"""I am in </span><span class="sc">{</span>city<span class="sc">}</span><span class="ss">, suggest 5 songs based on their current weather and their local language</span></span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a><span class="ss">            and display their album details such as album cover, artist, and preview link.</span></span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a><span class="ss">            return a json object with keys as song, artist, album, album_cover_url, and preview_url and reason</span></span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a><span class="ss">            key as song_suggestions and value as a list of json objects with keys as song, artist, album, album_cover_url, preview_url, and reason</span></span>
+<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a><span class="ss">            """</span></span>
+<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a>    tools <span class="op">=</span> available_tools</span>
+<span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a>        model<span class="op">=</span><span class="st">"gpt-4-1106-preview"</span>,</span>
+<span id="cb60-20"><a href="#cb60-20" aria-hidden="true" tabindex="-1"></a>        messages<span class="op">=</span>messages,</span>
+<span id="cb60-21"><a href="#cb60-21" aria-hidden="true" tabindex="-1"></a>        tools<span class="op">=</span>tools,</span>
+<span id="cb60-22"><a href="#cb60-22" aria-hidden="true" tabindex="-1"></a>        tool_choice<span class="op">=</span><span class="st">"auto"</span>,</span>
+<span id="cb60-23"><a href="#cb60-23" aria-hidden="true" tabindex="-1"></a>        temperature<span class="op">=</span><span class="fl">0.9</span></span>
+<span id="cb60-24"><a href="#cb60-24" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb60-25"><a href="#cb60-25" aria-hidden="true" tabindex="-1"></a>    response_message <span class="op">=</span> response.choices[<span class="dv">0</span>].message</span>
+<span id="cb60-26"><a href="#cb60-26" aria-hidden="true" tabindex="-1"></a>    tool_calls <span class="op">=</span> response_message.tool_calls</span>
+<span id="cb60-27"><a href="#cb60-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-28"><a href="#cb60-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> tool_calls:</span>
+<span id="cb60-29"><a href="#cb60-29" aria-hidden="true" tabindex="-1"></a>        function_name <span class="op">=</span> tool_calls[<span class="dv">0</span>].function.name</span>
+<span id="cb60-30"><a href="#cb60-30" aria-hidden="true" tabindex="-1"></a>        function_args <span class="op">=</span> json.loads(tool_calls[<span class="dv">0</span>].function.arguments)</span>
+<span id="cb60-31"><a href="#cb60-31" aria-hidden="true" tabindex="-1"></a>        function_response <span class="op">=</span> available_functions[function_name](<span class="op">**</span>function_args)</span>
+<span id="cb60-32"><a href="#cb60-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-33"><a href="#cb60-33" aria-hidden="true" tabindex="-1"></a>        messages.append(response_message)</span>
+<span id="cb60-34"><a href="#cb60-34" aria-hidden="true" tabindex="-1"></a>        messages.append(</span>
+<span id="cb60-35"><a href="#cb60-35" aria-hidden="true" tabindex="-1"></a>            {</span>
+<span id="cb60-36"><a href="#cb60-36" aria-hidden="true" tabindex="-1"></a>                <span class="st">"tool_call_id"</span>: tool_calls[<span class="dv">0</span>].<span class="bu">id</span>,</span>
+<span id="cb60-37"><a href="#cb60-37" aria-hidden="true" tabindex="-1"></a>                <span class="st">"role"</span>: <span class="st">"tool"</span>,</span>
+<span id="cb60-38"><a href="#cb60-38" aria-hidden="true" tabindex="-1"></a>                <span class="st">"name"</span>: function_name,</span>
+<span id="cb60-39"><a href="#cb60-39" aria-hidden="true" tabindex="-1"></a>                <span class="st">"content"</span>: function_response,</span>
+<span id="cb60-40"><a href="#cb60-40" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb60-41"><a href="#cb60-41" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb60-42"><a href="#cb60-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-43"><a href="#cb60-43" aria-hidden="true" tabindex="-1"></a>        second_response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb60-44"><a href="#cb60-44" aria-hidden="true" tabindex="-1"></a>            model<span class="op">=</span><span class="st">"gpt-4-1106-preview"</span>,</span>
+<span id="cb60-45"><a href="#cb60-45" aria-hidden="true" tabindex="-1"></a>            messages<span class="op">=</span>messages,</span>
+<span id="cb60-46"><a href="#cb60-46" aria-hidden="true" tabindex="-1"></a>            tools<span class="op">=</span>available_tools,</span>
+<span id="cb60-47"><a href="#cb60-47" aria-hidden="true" tabindex="-1"></a>            tool_choice<span class="op">=</span><span class="st">"auto"</span>,</span>
+<span id="cb60-48"><a href="#cb60-48" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb60-49"><a href="#cb60-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-50"><a href="#cb60-50" aria-hidden="true" tabindex="-1"></a>        response_message <span class="op">=</span> second_response.choices[<span class="dv">0</span>].message</span>
+<span id="cb60-51"><a href="#cb60-51" aria-hidden="true" tabindex="-1"></a>        tool_calls <span class="op">=</span> response_message.tool_calls</span>
+<span id="cb60-52"><a href="#cb60-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-53"><a href="#cb60-53" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> tool_calls:</span>
+<span id="cb60-54"><a href="#cb60-54" aria-hidden="true" tabindex="-1"></a>            messages.append(response_message)</span>
+<span id="cb60-55"><a href="#cb60-55" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> tool <span class="kw">in</span> tool_calls:</span>
+<span id="cb60-56"><a href="#cb60-56" aria-hidden="true" tabindex="-1"></a>                function_name <span class="op">=</span> tool.function.name</span>
+<span id="cb60-57"><a href="#cb60-57" aria-hidden="true" tabindex="-1"></a>                function_args <span class="op">=</span> json.loads(tool.function.arguments)</span>
+<span id="cb60-58"><a href="#cb60-58" aria-hidden="true" tabindex="-1"></a>                function_response <span class="op">=</span> available_functions[function_name](<span class="op">**</span>function_args)</span>
+<span id="cb60-59"><a href="#cb60-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-60"><a href="#cb60-60" aria-hidden="true" tabindex="-1"></a>                messages.append(</span>
+<span id="cb60-61"><a href="#cb60-61" aria-hidden="true" tabindex="-1"></a>                    {</span>
+<span id="cb60-62"><a href="#cb60-62" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"tool_call_id"</span>: tool.<span class="bu">id</span>,</span>
+<span id="cb60-63"><a href="#cb60-63" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"role"</span>: <span class="st">"tool"</span>,</span>
+<span id="cb60-64"><a href="#cb60-64" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"name"</span>: function_name,</span>
+<span id="cb60-65"><a href="#cb60-65" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"content"</span>: function_response,</span>
+<span id="cb60-66"><a href="#cb60-66" aria-hidden="true" tabindex="-1"></a>                    }</span>
+<span id="cb60-67"><a href="#cb60-67" aria-hidden="true" tabindex="-1"></a>                )</span>
+<span id="cb60-68"><a href="#cb60-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-69"><a href="#cb60-69" aria-hidden="true" tabindex="-1"></a>            third_response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb60-70"><a href="#cb60-70" aria-hidden="true" tabindex="-1"></a>                model<span class="op">=</span><span class="st">"gpt-4-1106-preview"</span>,</span>
+<span id="cb60-71"><a href="#cb60-71" aria-hidden="true" tabindex="-1"></a>                messages<span class="op">=</span>messages,</span>
+<span id="cb60-72"><a href="#cb60-72" aria-hidden="true" tabindex="-1"></a>                response_format<span class="op">=</span>{<span class="st">"type"</span>:<span class="st">"json_object"</span>}</span>
+<span id="cb60-73"><a href="#cb60-73" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb60-74"><a href="#cb60-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-75"><a href="#cb60-75" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> third_response</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="function_calling_files/figure-html/a2142729-1-image.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">image.png</figcaption>
+</figure>
+</div>
+<div class="cell" data-execution_count="38">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> generate_weather_music(<span class="st">"Sydney"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="39">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>song_suggestions_json <span class="op">=</span> result.choices[<span class="dv">0</span>].message.content</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="40">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(song_suggestions_json)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="40">
+<pre><code>str</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="41">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>song_suggestions_json <span class="op">=</span> json.loads(song_suggestions_json)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="42">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>song_suggestions_json </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="42">
+<pre><code>{'song_suggestions': [{'song': 'Over the Rainbow',
+   'artist': "Israel Kamakawiwo'ole",
+   'album': 'Alone In Iz World',
+   'album_cover_url': 'https://i.scdn.co/image/ab67616d0000b27356c868c8c85e7e4e62bd9ec1',
+   'preview_url': 'https://p.scdn.co/mp3-preview/2b0ebc854ece09122c1918aeff6af258493defe9?cid=706a549bcf8a4575b6e1dd3fc24f5f95',
+   'reason': "This classic song's soothing ukulele and gentle vocals perfectly match the peacefulness of an overcast day."},
+  {'song': 'Sweater Weather',
+   'artist': 'The Neighbourhood',
+   'album': 'I Love You.',
+   'album_cover_url': 'https://i.scdn.co/image/ab67616d0000b2738265a736a1eb838ad5a0b921',
+   'preview_url': 'https://p.scdn.co/mp3-preview/877602f424a9dea277b13301ffc516f9fd1fbe7e?cid=706a549bcf8a4575b6e1dd3fc24f5f95',
+   'reason': "The title itself and the song's vibe are a nod to the cozy feel of the current Sydney weather."},
+  {'song': 'Set Fire to the Rain',
+   'artist': 'Adele',
+   'album': '21',
+   'album_cover_url': 'https://i.scdn.co/image/ab67616d0000b2732118bf9b198b05a95ded6300',
+   'preview_url': 'https://p.scdn.co/mp3-preview/6fc68c105e091645376471727960d2ba3cd0ee01?cid=706a549bcf8a4575b6e1dd3fc24f5f95',
+   'reason': "Though it's not raining, the cloudy skies can bring about the feeling captured by this powerful yet soulful song."},
+  {'song': 'Cloudy Day',
+   'artist': 'Tones And I',
+   'album': 'Cloudy Day',
+   'album_cover_url': 'https://i.scdn.co/image/ab67616d0000b273d2cf6639f08099bdb14e388d',
+   'preview_url': 'https://p.scdn.co/mp3-preview/9c49fc0dfef73b4f91d444309b06450c9e30fee5?cid=706a549bcf8a4575b6e1dd3fc24f5f95',
+   'reason': 'This song has a fitting title and an uplifting tone that can bring positivity to a cloudy day.'},
+  {'song': 'Cloudbusting',
+   'artist': 'Kate Bush',
+   'album': 'Hounds Of Love',
+   'album_cover_url': 'https://i.scdn.co/image/ab67616d0000b273ad08f4b38efbff0c0da0f252',
+   'preview_url': 'https://p.scdn.co/mp3-preview/0156aec767cfcbe6bfc80bb9c8ad931169a3d910?cid=706a549bcf8a4575b6e1dd3fc24f5f95',
+   'reason': 'An evocative track that seamlessly aligns with the overcast weather in Sydney, capturing the theme of moving through introspective moments.'}]}</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="43">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> song <span class="kw">in</span> song_suggestions_json[<span class="st">"song_suggestions"</span>]:</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="ss">f"### </span><span class="sc">{</span>song[<span class="st">'song'</span>]<span class="sc">}</span><span class="ss">"</span>))</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="ss">f"**Artist:** </span><span class="sc">{</span>song[<span class="st">'artist'</span>]<span class="sc">}</span><span class="ss">"</span>))</span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="ss">f"**Album:** </span><span class="sc">{</span>song[<span class="st">'album'</span>]<span class="sc">}</span><span class="ss">"</span>))</span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>    display(Image(url<span class="op">=</span>song[<span class="st">'album_cover_url'</span>], width<span class="op">=</span><span class="dv">200</span>))</span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="ss">f"[Preview the song](</span><span class="sc">{</span>song[<span class="st">'preview_url'</span>]<span class="sc">}</span><span class="ss">)"</span>))</span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="ss">f"**Reason:** </span><span class="sc">{</span>song[<span class="st">'reason'</span>]<span class="sc">}</span><span class="ss">"</span>))</span>
+<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="st">"----"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="over-the-rainbow" class="level3 cell-output cell-output-display">
+<h3 class="anchored" data-anchor-id="over-the-rainbow">Over the Rainbow</h3>
+</section>
+<div class="cell-output cell-output-display">
+<p><strong>Artist:</strong> Israel Kamakawiwo’ole</p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Album:</strong> Alone In Iz World</p>
+</div>
+<div class="cell-output cell-output-display">
+<img src="https://i.scdn.co/image/ab67616d0000b27356c868c8c85e7e4e62bd9ec1" width="200">
+</div>
+<div class="cell-output cell-output-display">
+<p><a href="https://p.scdn.co/mp3-preview/2b0ebc854ece09122c1918aeff6af258493defe9?cid=706a549bcf8a4575b6e1dd3fc24f5f95">Preview the song</a></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Reason:</strong> This classic song’s soothing ukulele and gentle vocals perfectly match the peacefulness of an overcast day.</p>
+</div>
+<div class="cell-output cell-output-display">
+<hr>
+</div>
+<section id="sweater-weather" class="level3 cell-output cell-output-display">
+<h3 class="anchored" data-anchor-id="sweater-weather">Sweater Weather</h3>
+</section>
+<div class="cell-output cell-output-display">
+<p><strong>Artist:</strong> The Neighbourhood</p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Album:</strong> I Love You.</p>
+</div>
+<div class="cell-output cell-output-display">
+<img src="https://i.scdn.co/image/ab67616d0000b2738265a736a1eb838ad5a0b921" width="200">
+</div>
+<div class="cell-output cell-output-display">
+<p><a href="https://p.scdn.co/mp3-preview/877602f424a9dea277b13301ffc516f9fd1fbe7e?cid=706a549bcf8a4575b6e1dd3fc24f5f95">Preview the song</a></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Reason:</strong> The title itself and the song’s vibe are a nod to the cozy feel of the current Sydney weather.</p>
+</div>
+<div class="cell-output cell-output-display">
+<hr>
+</div>
+<section id="set-fire-to-the-rain" class="level3 cell-output cell-output-display">
+<h3 class="anchored" data-anchor-id="set-fire-to-the-rain">Set Fire to the Rain</h3>
+</section>
+<div class="cell-output cell-output-display">
+<p><strong>Artist:</strong> Adele</p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Album:</strong> 21</p>
+</div>
+<div class="cell-output cell-output-display">
+<img src="https://i.scdn.co/image/ab67616d0000b2732118bf9b198b05a95ded6300" width="200">
+</div>
+<div class="cell-output cell-output-display">
+<p><a href="https://p.scdn.co/mp3-preview/6fc68c105e091645376471727960d2ba3cd0ee01?cid=706a549bcf8a4575b6e1dd3fc24f5f95">Preview the song</a></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Reason:</strong> Though it’s not raining, the cloudy skies can bring about the feeling captured by this powerful yet soulful song.</p>
+</div>
+<div class="cell-output cell-output-display">
+<hr>
+</div>
+<section id="cloudy-day" class="level3 cell-output cell-output-display">
+<h3 class="anchored" data-anchor-id="cloudy-day">Cloudy Day</h3>
+</section>
+<div class="cell-output cell-output-display">
+<p><strong>Artist:</strong> Tones And I</p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Album:</strong> Cloudy Day</p>
+</div>
+<div class="cell-output cell-output-display">
+<img src="https://i.scdn.co/image/ab67616d0000b273d2cf6639f08099bdb14e388d" width="200">
+</div>
+<div class="cell-output cell-output-display">
+<p><a href="https://p.scdn.co/mp3-preview/9c49fc0dfef73b4f91d444309b06450c9e30fee5?cid=706a549bcf8a4575b6e1dd3fc24f5f95">Preview the song</a></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Reason:</strong> This song has a fitting title and an uplifting tone that can bring positivity to a cloudy day.</p>
+</div>
+<div class="cell-output cell-output-display">
+<hr>
+</div>
+<section id="cloudbusting" class="level3 cell-output cell-output-display">
+<h3 class="anchored" data-anchor-id="cloudbusting">Cloudbusting</h3>
+</section>
+<div class="cell-output cell-output-display">
+<p><strong>Artist:</strong> Kate Bush</p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Album:</strong> Hounds Of Love</p>
+</div>
+<div class="cell-output cell-output-display">
+<img src="https://i.scdn.co/image/ab67616d0000b273ad08f4b38efbff0c0da0f252" width="200">
+</div>
+<div class="cell-output cell-output-display">
+<p><a href="https://p.scdn.co/mp3-preview/0156aec767cfcbe6bfc80bb9c8ad931169a3d910?cid=706a549bcf8a4575b6e1dd3fc24f5f95">Preview the song</a></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><strong>Reason:</strong> An evocative track that seamlessly aligns with the overcast weather in Sydney, capturing the theme of moving through introspective moments.</p>
+</div>
+<div class="cell-output cell-output-display">
+<hr>
+</div>
+</div>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
