@@ -66,6 +66,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -94,6 +96,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: [{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: [],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-6W2RG8ED2W"></script>
 
 <script type="text/javascript">
@@ -111,6 +142,10 @@ gtag('config', 'G-6W2RG8ED2W', { 'anonymize_ip': true});
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
+<link rel="alternate" type="application/rss+xml" title="Explained Intuitively" href="llm_temperature.xml"><meta property="og:title" content="Explained Intuitively - Understanding OpenAI ChatCompletion Model Parameters">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://www.arunprakash.org/posts/understanding-openai-chatcompletion-model-parameters/IMG_F4CC52CE7F7F-1.jpeg">
+<meta property="og:site-name" content="Explained Intuitively">
 <meta name="twitter:title" content="Explained Intuitively - Understanding OpenAI ChatCompletion Model Parameters">
 <meta name="twitter:description" content="">
 <meta name="twitter:image" content="https://www.arunprakash.org/posts/understanding-openai-chatcompletion-model-parameters/IMG_F4CC52CE7F7F-1.jpeg">
@@ -259,7 +294,7 @@ gtag('config', 'G-6W2RG8ED2W', { 'anonymize_ip': true});
 <p>In each parameter, we will explore different range of values and discuss about openai’s default values and recommendations. Then in the final section we will go through <strong>some real examples</strong> to understand how these parameters affect the token generation process.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="llm_temperature_files/figure-html/782ed51d-1-IMG_F4CC52CE7F7F-1.jpeg" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="llm_temperature_files/figure-html/e178d8be-1-IMG_F4CC52CE7F7F-1.jpeg" class="img-fluid figure-img" style="width:80.0%"></p>
 <figcaption class="figure-caption">IMG_F4CC52CE7F7F-1.jpeg</figcaption>
 </figure>
 </div>
@@ -370,7 +405,7 @@ gtag('config', 'G-6W2RG8ED2W', { 'anonymize_ip': true});
 <p>In the context of OpenAI, tokens are the basic units of text processed by their language models, such as GPT-3. OpenAI employs Byte-Pair Encoding (BPE) for tokenization, which is a method initially designed for text compression. BPE identifies the most frequent pairs of characters or tokens and merges them to form new tokens, thus optimizing the tokenization process for efficiency and effectiveness in representing the text data. This approach allows the model to handle a wide range of vocabulary, including rare words or phrases, by breaking them down into subword units.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="llm_temperature_files/figure-html/86c63c86-1-image.png" class="img-fluid figure-img"></p>
+<p><img src="llm_temperature_files/figure-html/b47380a6-1-image.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">image.png</figcaption>
 </figure>
 </div>
@@ -807,7 +842,7 @@ P'(w_i) = \frac{P(w_i)^{\frac{1}{T}}}{\sum_{j=1}^{V} P(w_j)^{\frac{1}{T}}}
 </section>
 <section id="openai-recommendations-for-temperature" class="level1">
 <h1>OpenAI Recommendations for Temperature</h1>
-<p><img src="llm_temperature_files/figure-html/10ec5b7a-1-image-3.png" class="img-fluid" alt="image-3.png"> - default is 1 - range: 0 to 2 <img src="llm_temperature_files/figure-html/10ec5b7a-2-image.png" class="img-fluid" alt="image.png"></p>
+<p><img src="llm_temperature_files/figure-html/803b5454-1-image-3.png" class="img-fluid" alt="image-3.png"> - default is 1 - range: 0 to 2 <img src="llm_temperature_files/figure-html/803b5454-2-image.png" class="img-fluid" alt="image.png"></p>
 </section>
 <section id="top-p-nucleus-sampling" class="level1">
 <h1>Top-P (Nucleus Sampling)</h1>
@@ -1204,13 +1239,13 @@ Machine learning is like that toy, but with big computers. They can learn from l
 <h1>OpenAI Recommendations for Top-P</h1>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="llm_temperature_files/figure-html/5b347ad1-1-image.png" class="img-fluid figure-img"></p>
+<p><img src="llm_temperature_files/figure-html/dec87f32-1-image.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">image.png</figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="llm_temperature_files/figure-html/db9abc29-1-image-2.png" class="img-fluid figure-img"></p>
+<p><img src="llm_temperature_files/figure-html/2ba2fb3f-1-image-2.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">image-2.png</figcaption>
 </figure>
 </div>
@@ -1309,7 +1344,7 @@ Machine learning is like that toy, but with big computers. They can learn from l
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="llm_temperature_files/figure-html/236e13df-1-image.png" class="img-fluid figure-img"></p>
+<p><img src="llm_temperature_files/figure-html/56ef3d0f-1-image.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">image.png</figcaption>
 </figure>
 </div>
@@ -1321,7 +1356,7 @@ Machine learning is like that toy, but with big computers. They can learn from l
 <p>It ranges from -2.0 to 2.0, where positive values discourage repetition by penalizing tokens that occur frequently, and negative values can increase the likelihood of repetition. This helps control the diversity of the generated content and prevent verbatim repetition.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="llm_temperature_files/figure-html/ed7b7412-1-image.png" class="img-fluid figure-img"></p>
+<p><img src="llm_temperature_files/figure-html/96a6c5ea-1-image.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">image.png</figcaption>
 </figure>
 </div>
@@ -1393,13 +1428,13 @@ Machine learning is like that toy, but with big computers. They can learn from l
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="llm_temperature_files/figure-html/b5184eb7-1-image.png" class="img-fluid figure-img"></p>
+<p><img src="llm_temperature_files/figure-html/f9b010fd-1-image.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">image.png</figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="llm_temperature_files/figure-html/2e728122-1-image.png" class="img-fluid figure-img"></p>
+<p><img src="llm_temperature_files/figure-html/9d9e75e2-1-image.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">image.png</figcaption>
 </figure>
 </div>
@@ -1468,13 +1503,13 @@ Machine learning is like that toy, but with big computers. They can learn from l
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="llm_temperature_files/figure-html/c0f515f6-1-image.png" class="img-fluid figure-img"></p>
+<p><img src="llm_temperature_files/figure-html/e33386e8-1-image.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">image.png</figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="llm_temperature_files/figure-html/d244c352-1-image.png" class="img-fluid figure-img"></p>
+<p><img src="llm_temperature_files/figure-html/1ace7c9e-1-image.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">image.png</figcaption>
 </figure>
 </div>
@@ -1554,11 +1589,19 @@ Machine learning is like that toy, but with big computers. They can learn from l
 </ul>
 
 
+
 </section>
 </section>
 </section>
 
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

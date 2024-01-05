@@ -1,9 +1,26 @@
 [
   {
+    "listing": "/posts/master-the-art-of-function-calling-in-openai-assistants-api-a-comprehensive-guide-for-beginners/assistants_function_calling.html",
+    "items": []
+  },
+  {
+    "listing": "/posts/openai-parallel-function-calling-handson-tools/function_calling.html",
+    "items": []
+  },
+  {
+    "listing": "/posts/understanding-openai-chatcompletion-model-parameters/llm_temperature.html",
+    "items": []
+  },
+  {
     "listing": "/index.html",
     "items": [
+      "/posts/master-the-art-of-function-calling-in-openai-assistants-api-a-comprehensive-guide-for-beginners/assistants_function_calling.html",
       "/posts/openai-parallel-function-calling-handson-tools/function_calling.html",
       "/posts/understanding-openai-chatcompletion-model-parameters/llm_temperature.html"
     ]
+  },
+  {
+    "listing": "/about.html",
+    "items": []
   }
 ]
